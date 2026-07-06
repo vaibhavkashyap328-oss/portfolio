@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vaibhav — Data Science &amp; Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12161c;
+    --panel:#1b212b;
+    --panel-2:#222a35;
+    --paper:#eceef1;
+    --paper-2:#dfe3e8;
+    --amber:#e8a63d;
+    --teal:#4a9d93;
+    --muted:#8b95a3;
+    --muted-dark:#5b6472;
+    --line: rgba(236,238,241,0.12);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{ font-family:'Space Grotesk', sans-serif; font-weight:600; letter-spacing:-0.01em;}
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  ::selection{ background:var(--amber); color:var(--ink); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 6%;
+    background:rgba(18,22,28,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-brand{ font-size:1.05rem; font-weight:700; }
+  .nav-brand .dot{ color:var(--amber); }
+  .nav-links{ display:flex; gap:32px; list-style:none; }
+  .nav-links a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--muted); text-decoration:none; transition:color 0.2s;
+  }
+  .nav-links a:hover{ color:var(--amber); }
+  .nav-toggle{ display:none; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:140px 6% 80px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--amber);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:24px;
+  }
+  .eyebrow::before{
+    content:''; width:8px; height:8px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 4px rgba(232,166,61,0.15);
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 6vw, 5rem);
+    max-width:16ch;
+    line-height:1.05;
+    margin-bottom:28px;
+  }
+  .hero h1 em{ font-style:normal; color:var(--amber); }
+  .hero p.lead{
+    max-width:52ch;
+    font-size:1.1rem;
+    color:var(--muted);
+    margin-bottom:36px;
+  }
+  .ticker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    color:var(--teal);
+    height:1.4em;
+    overflow:hidden;
+    margin-bottom:44px;
+  }
+  .ticker span{ display:block; }
+  .hero-cta{ display:flex; gap:16px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:14px 26px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem; text-transform:uppercase; letter-spacing:0.06em;
+    text-decoration:none;
+    border-radius:2px;
+    transition:transform 0.2s, background 0.2s;
+  }
+  .btn-primary{ background:var(--amber); color:var(--ink); font-weight:600; }
+  .btn-primary:hover{ transform:translateY(-2px); background:#f0b355; }
+  .btn-ghost{ border:1px solid var(--line); color:var(--paper); }
+  .btn-ghost:hover{ border-color:var(--amber); color:var(--amber); }
+
+  /* signature scan-line chart */
+  .scan-wrap{
+    position:absolute; right:6%; top:50%; transform:translateY(-50%);
+    width:38%; max-width:460px; opacity:0.9;
+  }
+  @media (max-width:900px){ .scan-wrap{ display:none; } }
+  .scan-label{ font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--muted-dark); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px;}
+
+  /* ---------- Section shell ---------- */
+  section{ padding:120px 6%; position:relative; }
+  .section-head{ margin-bottom:56px; max-width:60ch; }
+  .section-head .eyebrow{ margin-bottom:14px; }
+  .section-head h2{ font-size:clamp(1.8rem, 3.4vw, 2.6rem); }
+  .section-head p{ color:var(--muted); margin-top:14px; }
+
+  /* ---------- About ---------- */
+  .about{ background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .about-grid{
+    display:grid; grid-template-columns:1.2fr 1fr; gap:60px; align-items:start;
+  }
+  @media (max-width:800px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-text p{ color:var(--muted); margin-bottom:18px; max-width:56ch;}
+  .about-text strong{ color:var(--paper); }
+  .stat-list{ display:flex; flex-direction:column; gap:0; border-top:1px solid var(--line); }
+  .stat-row{
+    display:flex; justify-content:space-between; padding:18px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .stat-row .label{ font-family:'IBM Plex Mono', monospace; font-size:0.78rem; color:var(--muted-dark); text-transform:uppercase; letter-spacing:0.06em;}
+  .stat-row .value{ font-family:'Space Grotesk', sans-serif; font-weight:600; }
+
+  /* ---------- Work / Featured case study ---------- */
+  .case{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:48px;
+    display:grid; grid-template-columns:1fr 1fr; gap:48px;
+  }
+  @media (max-width:900px){ .case{ grid-template-columns:1fr; padding:28px;} }
+  .case-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:var(--teal); border:1px solid rgba(74,157,147,0.4); padding:4px 10px;
+    border-radius:2px; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:18px;
+  }
+  .case h3{ font-size:1.6rem; margin-bottom:14px; }
+  .case p{ color:var(--muted); margin-bottom:16px; }
+  .case ul{ list-style:none; margin:20px 0; padding:0; }
+  .case ul li{
+    font-size:0.92rem; color:var(--paper); padding:8px 0 8px 22px; position:relative;
+    border-bottom:1px solid var(--line);
+  }
+  .case ul li::before{ content:'▹'; position:absolute; left:0; color:var(--amber); }
+  .case-media video, .case-media img{ width:100%; border-radius:4px; border:1px solid var(--line); display:block; }
+  .case-media{ display:flex; flex-direction:column; gap:16px; }
+  .data-strip{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--muted-dark);
+    display:flex; flex-wrap:wrap; gap:14px; padding:14px 0; border-top:1px solid var(--line); margin-top:12px;
+  }
+  .data-strip span b{ color:var(--amber); font-weight:500; }
+
+  /* ---------- Research ---------- */
+  .research-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  @media (max-width:800px){ .research-grid{ grid-template-columns:1fr; } }
+  .r-card{
+    border:1px solid var(--line); border-radius:4px; padding:32px;
+    background:var(--panel);
+  }
+  .r-card .case-tag{ color:var(--amber); border-color:rgba(232,166,61,0.4); }
+  .r-card h3{ font-size:1.25rem; margin-bottom:10px; }
+  .r-card p{ color:var(--muted); font-size:0.95rem; margin-bottom:14px; }
+  .r-note{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--muted-dark);
+    border-left:2px solid var(--amber); padding-left:10px; margin-top:14px;
+  }
+
+  /* ---------- Skills ---------- */
+  .skills{ background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .skill-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .skill-cell{
+    background:var(--ink); padding:22px 20px;
+  }
+  .skill-cell .cat{ font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--muted-dark); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;}
+  .skill-cell .items{ font-size:0.92rem; color:var(--paper); }
+
+  /* ---------- Proof / service pages ---------- */
+  .proof-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  @media (max-width:800px){ .proof-grid{ grid-template-columns:1fr; } }
+  .proof-card img{ width:100%; border-radius:4px; border:1px solid var(--line); display:block; margin-bottom:14px;}
+  .proof-card .cap{ font-family:'IBM Plex Mono', monospace; font-size:0.75rem; color:var(--muted); }
+
+  /* ---------- Contact ---------- */
+  .contact{ text-align:left; }
+  .contact-inner{
+    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:40px;
+    border-top:1px solid var(--line); padding-top:56px;
+  }
+  .contact h2{ font-size:clamp(2rem,4.4vw,3.4rem); max-width:14ch; }
+  .contact-links{ display:flex; flex-direction:column; gap:12px; }
+  .contact-links a{
+    font-family:'IBM Plex Mono', monospace; text-decoration:none; font-size:0.95rem;
+    color:var(--muted); border-bottom:1px solid transparent; transition:color 0.2s, border-color 0.2s;
+    padding-bottom:2px; width:fit-content;
+  }
+  .contact-links a:hover{ color:var(--amber); border-color:var(--amber); }
+  footer{
+    padding:28px 6%; font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--muted-dark);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; border-top:1px solid var(--line);
+  }
+
+  /* scroll reveal */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">VAIBHAV<span class="dot">.</span>DATA</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow">Data Science · IIT Madras</div>
+  <h1>I turn messy, raw data into <em>decisions you can act on.</em></h1>
+  <p class="lead">Data cleaning, dashboards, and analysis for businesses and researchers — built with Python, SQL and spreadsheet tools, delivered as something you can actually use.</p>
+  <div class="ticker mono">
+    <span id="ticker-text">LAT 25.2632°N · LON 82.9863°E · SPEED 0.03 km/h · SAT 16</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#work" class="btn btn-primary">See the work</a>
+    <a href="#contact" class="btn btn-ghost">Get in touch</a>
+  </div>
+
+  <div class="scan-wrap">
+    <div class="scan-label">// raw signal → clean read</div>
+    <svg viewBox="0 0 400 180" width="100%" height="auto">
+      <line x1="0" y1="150" x2="400" y2="150" stroke="rgba(236,238,241,0.15)" stroke-width="1"/>
+      <line x1="0" y1="100" x2="400" y2="100" stroke="rgba(236,238,241,0.08)" stroke-width="1"/>
+      <line x1="0" y1="50" x2="400" y2="50" stroke="rgba(236,238,241,0.08)" stroke-width="1"/>
+      <polyline points="0,120 20,95 40,140 60,80 80,130 100,60 120,145 140,90 160,110 180,50 200,135 220,75 240,120 260,45 280,100 300,70 320,130 340,55 360,95 380,40 400,90"
+        fill="none" stroke="rgba(139,149,163,0.5)" stroke-width="1.5" stroke-dasharray="500" stroke-dashoffset="500">
+        <animate attributeName="stroke-dashoffset" from="500" to="0" dur="1.4s" fill="freeze" />
+      </polyline>
+      <polyline points="0,120 20,110 40,105 60,95 80,100 100,85 120,90 140,78 160,80 180,68 200,72 220,60 240,62 260,48 280,52 300,42 320,44 340,32 360,34 380,22 400,25"
+        fill="none" stroke="#e8a63d" stroke-width="2.5" stroke-dasharray="500" stroke-dashoffset="500">
+        <animate attributeName="stroke-dashoffset" from="500" to="0" dur="1.6s" begin="0.9s" fill="freeze" />
+      </polyline>
+    </svg>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="section-head reveal">
+    <div class="eyebrow">About</div>
+    <h2>Analysis that ends in a decision, not just a chart.</h2>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I'm a <strong>BS in Data Science &amp; Applications student at IIT Madras</strong>, working across freelance data projects and academic research. I help businesses and individuals turn messy spreadsheets and raw data into clean, actionable insight — dashboards, reports, and tools you can actually use to make decisions.</p>
+      <p>Alongside client work, I've done research internships in <strong>transportation systems (IIT BHU, Varanasi)</strong> and <strong>neuroscience (NIT Kurukshetra)</strong>, so I'm as comfortable with messy real-world sensor data as I am with a small business's sales sheet.</p>
+      <p>I've also served as a <strong>Student Ambassador for Google India and eDC IIT Delhi</strong> — roles that had me communicating technical ideas to non-technical audiences, which shows up directly in how I write reports and dashboards for clients.</p>
+    </div>
+    <div class="stat-list">
+      <div class="stat-row"><span class="label">Base</span><span class="value">IIT Madras</span></div>
+      <div class="stat-row"><span class="label">Focus</span><span class="value">Data Cleaning · Dashboards · Analysis</span></div>
+      <div class="stat-row"><span class="label">Stack</span><span class="value">Python · SQL · Excel · Sheets</span></div>
+      <div class="stat-row"><span class="label">Research</span><span class="value">Transportation · Neuroscience</span></div>
+      <div class="stat-row"><span class="label">Available on</span><span class="value">Fiverr · Upwork · Freelancer</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="section-head reveal">
+    <div class="eyebrow">Featured Work</div>
+    <h2>Multi-CSV Interactive Graph Generator</h2>
+    <p>A self-serve Streamlit tool built for freelance clients who kept sending raw sensor/telemetry CSVs and needing quick, custom charts on turnaround.</p>
+  </div>
+
+  <div class="case reveal">
+    <div class="case-copy">
+      <span class="case-tag">Client Tool · Live Demo</span>
+      <h3>Upload any CSV. Get an interactive chart. No back-and-forth.</h3>
+      <p>Clients regularly needed quick visualizations from raw sensor/telemetry-style exports, but manually plotting each request in Excel or a one-off Python script was slow and repetitive. I built a reusable, self-serve tool clients can operate themselves — no waiting on me for every new chart.</p>
+      <ul>
+        <li>Built with Python, Streamlit, Pandas and Plotly Express</li>
+        <li>Handles multiple CSV uploads in one session, with a file switcher to jump between them</li>
+        <li>X/Y-axis dropdowns auto-populate from each file's actual columns — works on any CSV structure, not just one dataset</li>
+        <li><code class="mono">@st.cache_data</code> keeps it fast even on 50,000+ row files</li>
+        <li>Two-column layout: settings on the left, live chart on the right, titled automatically</li>
+      </ul>
+      <div class="data-strip">
+        <span>Rows <b>50,000+</b></span>
+        <span>Columns <b>20+</b></span>
+        <span>Domain <b>GNSS / telemetry</b></span>
+        <span>Hosted <b>GitHub</b></span>
+      </div>
+    </div>
+    <div class="case-media">
+      <video src="assets/demo-multi-csv-tool.mp4" controls playsinline preload="metadata"></video>
+      <div class="scan-label">Demo: upload → pick X/Y axis → chart renders instantly</div>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <div class="section-head reveal">
+    <div class="eyebrow">Research</div>
+    <h2>Before the freelance work, the research.</h2>
+    <p>Two internships that shaped how I approach messy, real-world data — full write-ups landing here soon.</p>
+  </div>
+  <div class="research-grid reveal">
+    <div class="r-card">
+      <span class="case-tag">IIT BHU, Varanasi</span>
+      <h3>Transportation Systems Research</h3>
+      <p>Research internship applying data analysis to transportation systems problems. The core challenge was raw, messy real-world data — it had to be shaped and cleaned into a usable structure before any analysis could even begin, the same discipline behind the GNSS/telemetry tool above.</p>
+      <div class="r-note">Method and findings write-up coming soon.</div>
+    </div>
+    <div class="r-card">
+      <span class="case-tag">NIT Kurukshetra</span>
+      <h3>Neuroscience Research</h3>
+      <p>Research internship applying analytical methods to neuroscience data — translating messy, unstructured signal data into a clean, analyzable form before drawing findings from it.</p>
+      <div class="r-note">Method and findings write-up coming soon.</div>
+    </div>
+  </div>
+</section>
+
+<section class="skills" id="skills">
+  <div class="section-head reveal">
+    <div class="eyebrow">Toolkit</div>
+    <h2>What I build with.</h2>
+  </div>
+  <div class="skill-grid reveal">
+    <div class="skill-cell"><div class="cat">Languages</div><div class="items">Python · SQL</div></div>
+    <div class="skill-cell"><div class="cat">Data</div><div class="items">Pandas · NumPy</div></div>
+    <div class="skill-cell"><div class="cat">ML</div><div class="items">Scikit-Learn · PyTorch</div></div>
+    <div class="skill-cell"><div class="cat">Visualization</div><div class="items">Matplotlib · Plotly</div></div>
+    <div class="skill-cell"><div class="cat">Spreadsheets</div><div class="items">Excel · Google Sheets</div></div>
+    <div class="skill-cell"><div class="cat">Apps</div><div class="items">Streamlit</div></div>
+  </div>
+</section>
+
+<section id="proof">
+  <div class="section-head reveal">
+    <div class="eyebrow">Client-Facing Work</div>
+    <h2>How I present this to clients.</h2>
+    <p>The service pages I run on freelance platforms — built to make the "messy data in, polished report out" promise clear at a glance.</p>
+  </div>
+  <div class="proof-grid reveal">
+    <div class="proof-card">
+      <img src="assets/service-excel-sheets.png" alt="Excel and Google Sheets Pro service page — clean data and visual dashboards">
+      <div class="cap">Service page — Excel &amp; Google Sheets: clean data, visual dashboards</div>
+    </div>
+    <div class="proof-card">
+      <img src="assets/service-messy-to-polished.png" alt="Messy data to polished reports service page">
+      <div class="cap">Service page — messy data → polished reports</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="contact-inner reveal">
+    <h2>Have messy data? Let's clean it up.</h2>
+    <div class="contact-links">
+      <a href="https://www.fiverr.com/sellers/vaibhav_data_/edit" class="mono" target="_blank" rel="noopener">Fiverr profile →</a>
+      <a href="https://www.upwork.com/freelancers/~015d57378e49adcec2" class="mono" target="_blank" rel="noopener">Upwork profile →</a>
+      <a href="https://www.linkedin.com/in/vaibhav-kashyap-3817a23b2/" class="mono" target="_blank" rel="noopener">LinkedIn →</a>
+      <a href="https://github.com/vaibhavkashyap328-oss" class="mono" target="_blank" rel="noopener">GitHub →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Vaibhav — Data Science &amp; Analysis</span>
+  <span>Built with Python, spreadsheets, and a lot of cleaned-up CSVs</span>
+</footer>
+
+<script>
+  // ticker cycle
+  const phrases = [
+    "LAT 25.2632°N · LON 82.9863°E · SPEED 0.03 km/h · SAT 16",
+    "50,000+ rows · 20+ columns · cleaned in seconds",
+    "raw CSV → interactive chart → client decision",
+    "messy spreadsheet → polished dashboard, delivered"
+  ];
+  let i = 0;
+  const tickerEl = document.getElementById('ticker-text');
+  if(tickerEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    setInterval(() => {
+      i = (i + 1) % phrases.length;
+      tickerEl.style.opacity = 0;
+      setTimeout(() => { tickerEl.textContent = phrases[i]; tickerEl.style.opacity = 1; }, 300);
+    }, 3200);
+    tickerEl.style.transition = 'opacity 0.3s ease';
+  }
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
